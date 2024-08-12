@@ -23,19 +23,28 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Deploy to Elastic Beanstalk
+    - name: Prepare application
+      run: |
+        mkdir -p .ebextensions
+        echo "option_settings:" > .ebextensions/options.config
+        echo "  aws:elasticbeanstalk:container:python:" >> .ebextensions/options.config
+        echo "    WSGIPath: streamlit_app.py" >> .ebextensions/options.config
+
+   - name: Deploy to Elastic Beanstalk
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
         APPLICATION_NAME: "view_embeddings"
         ENVIRONMENT_NAME: "view-embeddings-dev"
+        S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
       run: |
-        zip -r application.zip .
+        zip -r application.zip . -x "*.git*"
+        aws s3 cp application.zip s3://$S3_BUCKET_NAME/application.zip
         aws elasticbeanstalk create-application-version \
           --application-name $APPLICATION_NAME \
           --version-label $GITHUB_SHA \
-          --source-bundle S3Bucket="your-s3-bucket-name",S3Key=application.zip
+          --source-bundle S3Bucket=$S3_BUCKET_NAME,S3Key=application.zip
         aws elasticbeanstalk update-environment \
           --application-name $APPLICATION_NAME \
           --environment-name $ENVIRONMENT_NAME \
