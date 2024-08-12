@@ -30,7 +30,7 @@ jobs:
         echo "  aws:elasticbeanstalk:container:python:" >> .ebextensions/options.config
         echo "    WSGIPath: streamlit_app.py" >> .ebextensions/options.config
 
-   - name: Deploy to Elastic Beanstalk
+    - name: Deploy to Elastic Beanstalk
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
