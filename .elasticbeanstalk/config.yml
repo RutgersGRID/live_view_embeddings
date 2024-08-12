@@ -1,0 +1,17 @@
+branch-defaults:
+  main:
+    environment: null
+global:
+  application_name: view-embedding
+  branch: main
+  default_ec2_keyname: github-deply-eb
+  default_platform: Python 3.11 running on 64bit Amazon Linux 2023
+  default_region: us-east-1
+  include_git_submodules: true
+  instance_profile: null
+  platform_name: null
+  platform_version: null
+  profile: null
+  repository: live_view_embeddings
+  sc: git
+  workspace_type: Application
